@@ -5,9 +5,9 @@ const MONGO_URI = `${process.env.DB_MONGO_URL}`;
 async function connection() {
  try {
     await mongoose.connect(MONGO_URI);
-    console.log('Conexão com o MongoDB Atlas estabelecida!');
+    console.log('Connection to MongoDB Atlas established!');
   } catch (error) {
-    console.error('Erro ao conectar ao MongoDB Atlas:', error);
+    console.error('Error connecting to MongoDB Atlas:', error);
   }
 
 }

@@ -7,8 +7,8 @@ const getAllCars = async (req: Request, res: Response) => {
    const cars = await GetAllCarsService.getAll();
     return res.status(201).json(cars);
   } catch (error) {
-    console.error('Erro:', error);
-    res.status(500).json({ error: 'Erro ao obter os dados da API externa' });
+    console.error('Error getting data from external API', error);
+    res.status(500).json({ error: 'Error getting data from external API' });
   }
 };
 

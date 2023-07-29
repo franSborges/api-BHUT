@@ -21,8 +21,8 @@ const createCar = async (req: Request, res: Response) => {
     return res.status(201).json(responseObj);
 
   } catch (error) {
-    console.error('Erro ao criar carro', error);
-    res.status(500).json({ error: 'Erro ao criar carro' });
+    console.error('Error creating car', error);
+    res.status(500).json({ error: 'Error creating car' });
   }
 };
 

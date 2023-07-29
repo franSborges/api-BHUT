@@ -1,9 +1,12 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import axios from "axios";
 import carModel from "../models/carModel";
 import logModel from "../../Log/models/logModel";
 import amqp from 'amqplib';
-import { utcToZonedTime, format } from 'date-fns-tz';
 
+const rabbitMq = `${process.env.RABBITMQ_URL}`;
 
 interface IRequest {
   _id: string;
@@ -26,7 +29,7 @@ async function create(title: string, brand: string, price: string, age: number):
 
    await axios.post(`${process.env.API_BASE_URL}/api/cars`, newCarData);
 
-  const connection = await amqp.connect(`${process.env.RABBITMQ_URL}`);
+  const connection = await amqp.connect(rabbitMq);
   const channel = await connection.createChannel();
   const queueName = `${process.env.QUEUE_NAME}`;
   await channel.assertQueue(queueName, { durable: true });
@@ -34,11 +37,8 @@ async function create(title: string, brand: string, price: string, age: number):
   channel.sendToQueue(queueName, Buffer.from(carDataString), { persistent: true });
 
 
-  const dataHoraUTC = new Date();
-  const dataHora = utcToZonedTime(dataHoraUTC, 'America/Sao_Paulo');
-
   const logData = {
-    data_hora: format(dataHora, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", { timeZone: 'America/Sao_Paulo' }),
+    data_hora: new Date(),
     car_id: createdCar._id,
   };
 

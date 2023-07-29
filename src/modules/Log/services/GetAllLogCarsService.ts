@@ -10,8 +10,8 @@ async function getAll(): Promise<IRequest[]> {
     const logs = await Log.find();
     return logs;
   } catch (error) {
-    console.error('Erro ao consultar os registros de log:', error);
-    throw new Error('Erro ao consultar os registros de log');
+    console.error('Error querying log records:', error);
+    throw new Error('Error querying log records');
   }
 
 }

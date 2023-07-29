@@ -7,8 +7,8 @@ const getAllLogCars = async (req: Request, res: Response) => {
     return res.status(200).json(logs);
 
   } catch (error) {
-    console.error('Erro ao consultar os registros de log:', error);
-    res.status(500).json({ error: 'Erro ao consultar os registros de log' });
+    console.error('Error querying log records:', error);
+    res.status(500).json({ error: 'Error querying log records' });
   }
 }
 

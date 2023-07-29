@@ -1,16 +1,20 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import amqp from 'amqplib';
 import axios from 'axios';
 
-const QUEUE = `${process.env.QUEUE_NAME}`;
+const queue = `${process.env.QUEUE_NAME}`;
+const rabbitMq = `${process.env.RABBITMQ_URL}`;
 
 async function consumeFromQueue() {
   try {
-    const connection = await amqp.connect(`${process.env.RABBITMQ_URL}`);
+    const connection = await amqp.connect(rabbitMq);
     const channel = await connection.createChannel();
-    await channel.assertQueue(QUEUE, { durable: true });
+    await channel.assertQueue(queue, { durable: true });
     console.log('Aguardando mensagens da fila...');
 
-    channel.consume(QUEUE, (msg) => {
+    channel.consume(queue, (msg) => {
       if (msg !== null) {
         const carData = JSON.parse(msg.content.toString());
         console.log('Novo carro recebido:', carData);
@@ -19,13 +23,13 @@ async function consumeFromQueue() {
           console.log('Webhook enviado com sucesso!');
           channel.ack(msg);
         }).catch((error) => {
-          console.error('Erro ao enviar webhook:', error.message);
+          console.error('Error sending webhook:', error.message);
           channel.reject(msg, false);
         });
       }
     });
   } catch (error) {
-    console.error('Erro ao consumir fila:', error);
+    console.error('Error consuming queue:', error);
   }
 }
 
